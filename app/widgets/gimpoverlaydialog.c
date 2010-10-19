@@ -318,7 +318,7 @@ gimp_overlay_dialog_size_request (GtkWidget      *widget,
 
   if (child && gtk_widget_get_visible (child))
     {
-      gtk_widget_size_request (child, &child_requisition);
+      gtk_widget_get_preferred_size (child, &child_requisition, NULL);
     }
   else
     {
@@ -326,8 +326,8 @@ gimp_overlay_dialog_size_request (GtkWidget      *widget,
       child_requisition.height = 0;
     }
 
-  gtk_widget_size_request (dialog->header,      &header_requisition);
-  gtk_widget_size_request (dialog->action_area, &action_requisition);
+  gtk_widget_get_preferred_size (dialog->header,      &header_requisition, NULL);
+  gtk_widget_get_preferred_size (dialog->action_area, &action_requisition, NULL);
 
   requisition->width  += MAX (MAX (child_requisition.width,
                                    action_requisition.width),
@@ -356,8 +356,8 @@ gimp_overlay_dialog_size_allocate (GtkWidget     *widget,
 
   border_width = gtk_container_get_border_width (container);
 
-  gtk_widget_size_request (dialog->header,      &header_requisition);
-  gtk_widget_size_request (dialog->action_area, &action_requisition);
+  gtk_widget_get_preferred_size (dialog->header,      &header_requisition, NULL);
+  gtk_widget_get_preferred_size (dialog->action_area, &action_requisition, NULL);
 
   if (child && gtk_widget_get_visible (child))
     {
