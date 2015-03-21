@@ -76,8 +76,8 @@ struct _GimpGuiConfig
   /* experimental playground */
   gboolean             playground_npd_tool;
   gboolean             playground_handle_transform_tool;
-  gboolean             playground_multi_stroke;
   gboolean             playground_mybrush_tool;
+  gboolean             playground_symmetry;
 
   /* saved in sessionrc */
   gboolean             hide_docks;

@@ -1480,8 +1480,8 @@ prefs_dialog_new (Gimp       *gimp,
                                        _("_MyPaint Brush tool"),
                                        GTK_BOX (vbox2));
 #endif
-      button = prefs_check_button_add (object, "playground-multi-stroke",
-                                       _("_Multi-Stroke Painting"),
+      button = prefs_check_button_add (object, "playground-symmetry",
+                                       _("_Symmetry Painting"),
                                        GTK_BOX (vbox2));
     }
 
