@@ -138,19 +138,43 @@ _gimp_paintbrush_motion (GimpPaintCore    *paint_core,
   fade_point = gimp_paint_options_get_fade (paint_options, image,
                                             paint_core->pixel_dist);
 
+  coords = gimp_multi_stroke_get_origin (mstroke);
+  /* Some settings are based on the original stroke. */
+  opacity *= gimp_dynamics_get_linear_value (dynamics,
+                                             GIMP_DYNAMICS_OUTPUT_OPACITY,
+                                             coords,
+                                             paint_options,
+                                             fade_point);
+  if (opacity == 0.0)
+    return;
+
+  paint_appl_mode = paint_options->application_mode;
+
+  grad_point = gimp_dynamics_get_linear_value (dynamics,
+                                               GIMP_DYNAMICS_OUTPUT_COLOR,
+                                               coords,
+                                               paint_options,
+                                               fade_point);
+
+  dyn_output = gimp_dynamics_get_output (dynamics,
+                                         GIMP_DYNAMICS_OUTPUT_FORCE);
+
+  dyn_force = gimp_dynamics_get_linear_value (dynamics,
+                                              GIMP_DYNAMICS_OUTPUT_FORCE,
+                                              coords,
+                                              paint_options,
+                                              fade_point);
+
+  if (gimp_dynamics_output_is_enabled (dyn_output))
+    force = dyn_force;
+  else
+    force = paint_options->brush_force;
+
   for (i = 0; i < nstrokes; i++)
     {
       gint paint_width, paint_height;
 
       coords = gimp_multi_stroke_get_coords (mstroke, i);
-
-      opacity *= gimp_dynamics_get_linear_value (dynamics,
-                                                 GIMP_DYNAMICS_OUTPUT_OPACITY,
-                                                 coords,
-                                                 paint_options,
-                                                 fade_point);
-      if (opacity == 0.0)
-        continue;
 
       paint_buffer = gimp_paint_core_get_paint_buffer (paint_core, drawable,
                                                        paint_options, coords,
@@ -164,14 +188,6 @@ _gimp_paintbrush_motion (GimpPaintCore    *paint_core,
       op = gimp_multi_stroke_get_operation (mstroke, i,
                                             paint_width,
                                             paint_height);
-      paint_appl_mode = paint_options->application_mode;
-
-      grad_point = gimp_dynamics_get_linear_value (dynamics,
-                                                   GIMP_DYNAMICS_OUTPUT_COLOR,
-                                                   coords,
-                                                   paint_options,
-                                                   fade_point);
-
       if (gimp_paint_options_get_gradient_color (paint_options, image,
                                                  grad_point,
                                                  paint_core->pixel_dist,
@@ -218,20 +234,6 @@ _gimp_paintbrush_motion (GimpPaintCore    *paint_core,
           gegl_buffer_set_color (paint_buffer, NULL, color);
           g_object_unref (color);
         }
-
-      dyn_output = gimp_dynamics_get_output (dynamics,
-                                             GIMP_DYNAMICS_OUTPUT_FORCE);
-
-      dyn_force = gimp_dynamics_get_linear_value (dynamics,
-                                                  GIMP_DYNAMICS_OUTPUT_FORCE,
-                                                  coords,
-                                                  paint_options,
-                                                  fade_point);
-
-      if (gimp_dynamics_output_is_enabled (dyn_output))
-        force = dyn_force;
-      else
-        force = paint_options->brush_force;
 
       /* finally, let the brush core paste the colored area on the canvas */
       gimp_brush_core_paste_canvas (brush_core, drawable,
