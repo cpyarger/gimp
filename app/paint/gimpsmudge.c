@@ -196,7 +196,8 @@ gimp_smudge_start (GimpPaintCore    *paint_core,
       paint_buffer = gimp_paint_core_get_paint_buffer (paint_core, drawable,
                                                        paint_options, coords,
                                                        &paint_buffer_x,
-                                                       &paint_buffer_y);
+                                                       &paint_buffer_y,
+                                                       NULL, NULL);
       if (! paint_buffer)
         return FALSE;
 
@@ -282,6 +283,7 @@ gimp_smudge_motion (GimpPaintCore    *paint_core,
   GeglBuffer         *accum_buffer;
   GimpCoords         *coords;
   GeglNode           *op;
+  gint                paint_width, paint_height;
   gint                nstrokes;
   gint                i;
 
@@ -304,12 +306,15 @@ gimp_smudge_motion (GimpPaintCore    *paint_core,
       paint_buffer = gimp_paint_core_get_paint_buffer (paint_core, drawable,
                                                        paint_options, coords,
                                                        &paint_buffer_x,
-                                                       &paint_buffer_y);
+                                                       &paint_buffer_y,
+                                                       &paint_width,
+                                                       &paint_height);
       if (! paint_buffer)
         return;
 
-      op = gimp_multi_stroke_get_operation (mstroke, paint_core,
-                                            paint_buffer, i);
+      op = gimp_multi_stroke_get_operation (mstroke, i,
+                                            paint_width,
+                                            paint_height);
 
       paint_buffer_width  = gegl_buffer_get_width  (paint_buffer);
       paint_buffer_height = gegl_buffer_get_height (paint_buffer);
