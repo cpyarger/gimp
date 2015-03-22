@@ -736,7 +736,7 @@ xcf_load_image_props (XcfInfo   *info,
               GType          type;
               GParamSpec   **settings;
               GParamSpec    *spec;
-              guint          nsettings;
+              gint           n_settings;
               gint           i, j;
 
               info->cp += xcf_read_int32 (info->input,
@@ -759,8 +759,8 @@ xcf_load_image_props (XcfInfo   *info,
                   sym = gimp_image_symmetry_add (image, type);
 
                   settings = gimp_symmetry_get_xcf_settings (sym,
-                                                             &nsettings);
-                  for (j = 0; j < nsettings; j++)
+                                                             &n_settings);
+                  for (j = 0; j < n_settings; j++)
                     {
                       if (settings[j] == NULL)
                         continue;
